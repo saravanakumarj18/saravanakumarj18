@@ -18,11 +18,13 @@ from pyspark.sql.functions import create_map
 
 
 # creating spark session
+
 spark = SparkSession.Builder().appName("Aidetic_assignment").master("local[*]").getOrCreate()
 
 ip = 'C:\\Users\\sarav\\Documents\\study\\Aidetic_assignment\\data\\database.csv'
 
 # 1) reading the csv file
+
 df = spark.read.format("csv").option("header", True).load(ip)
 
 
@@ -31,6 +33,7 @@ df = spark.read.format("csv").option("header", True).load(ip)
 columns_to_convert = ["Latitude", "Longitude", "Depth", "Magnitude"]
 
 # Converting specific columns to the float data types as mentioned in assignment
+
 for column in columns_to_convert:
     df = df.withColumn(column, col(column).cast("float"))
     
@@ -39,6 +42,7 @@ df.printSchema()
 
 
 # converting the Date column(string) to Date datatype 
+
 df1 = df.withColumn(
     "Date",
     when(col("Date").contains("-"), to_date(col("Date"), "MM-dd-yyyy"))
@@ -47,16 +51,20 @@ df1 = df.withColumn(
 )
 
 # 2) converting Date and time into timestamp in a new column named Timestamp
+
 earthquake_df = df1.withColumn("Timestamp", to_timestamp(concat(col("Date"), lit(" "), col("Time")), "yyyy-MM-dd HH:mm:ss"))
 
 # caching it
+
 earthquake_df.cache()
 
 
 # 3) filtering data having magnitude greater than 5
+
 eq_filtered = earthquake_df.filter(col("Magnitude")>5.0)
 
 # 4)  finding average depth and magnitude
+
 avg_depth_and_magnitude = eq_filtered.groupBy(col("Type")). \
    agg(avg(col("Depth")).alias("avg_depth"),avg(col("Magnitude")).alias("avg_magnitude"))
    
@@ -64,6 +72,7 @@ avg_depth_and_magnitude.show()
 
    
 # 5) implementing UDF to categorize the earthquake   
+
 def earthquake_category(magnitude):
     if magnitude < 5:
         return 'Low'
@@ -82,6 +91,7 @@ eq_filtered.show()
 
 
 # 6) Calculate distance from reference location
+
 reference_location = (0, 0)
 
 #udf for calcultion
@@ -115,10 +125,8 @@ eq_filtered.show()
 
 
 
-
-
 # 7. Visualize the geographical distribution of earthquakes on a world map using Folium.
-# note : I don't have folio in my local system, i ran it in databricks, so i commented the visualization part here 
+#note : I don't have folio in my local system, i ran it in databricks, so i commented the visualization part here 
 
 """
 
@@ -142,9 +150,10 @@ earthquake_map.save("earthquake_map.html")
 """
 
 # 8) writing the file to the directory
+
 eq_filtered.write.format("csv").option("header", True).mode("overwrite").save("C:\\Users\\sarav\\Documents\\study\\Aidetic_assignment\\data\\output\\")
 
-
+# stopping sparksession
 spark.stop()
 
 
