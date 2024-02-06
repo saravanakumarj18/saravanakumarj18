@@ -1,4 +1,4 @@
---pyspark code for Aidetic assignment
+# pyspark code for Aidetic assignment
 
 
 
@@ -32,7 +32,7 @@ df = spark.read.format("csv").option("header", True).load(ip)
 
 columns_to_convert = ["Latitude", "Longitude", "Depth", "Magnitude"]
 
-# Converting specific columns to the float data types as mentioned in assignment
+## Converting specific columns to the float data types as mentioned in assignment
 
 for column in columns_to_convert:
     df = df.withColumn(column, col(column).cast("float"))
@@ -41,7 +41,7 @@ df.printSchema()
 
 
 
-# converting the Date column(string) to Date datatype 
+## converting the Date column(string) to Date datatype 
 
 df1 = df.withColumn(
     "Date",
@@ -54,7 +54,7 @@ df1 = df.withColumn(
 
 earthquake_df = df1.withColumn("Timestamp", to_timestamp(concat(col("Date"), lit(" "), col("Time")), "yyyy-MM-dd HH:mm:ss"))
 
-# caching it
+## caching it
 
 earthquake_df.cache()
 
