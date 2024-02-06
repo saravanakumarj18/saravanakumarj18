@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Feb  5 22:23:18 2024
 
-@author: sarav
-"""
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
