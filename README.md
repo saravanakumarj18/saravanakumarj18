@@ -132,10 +132,10 @@ eq_filtered.show()
 
 earthquake_map = folium.Map(location=[0, 0], zoom_start=2)
 
-# Create a MarkerCluster to add markers for each earthquake
+#Create a MarkerCluster to add markers for each earthquake
 marker_cluster = MarkerCluster().add_to(earthquake_map)
 
-# Iterate through the DataFrame and add markers to the map
+#Iterate through the DataFrame and add markers to the map
 for row in eq_filtered.collect():
     folium.Marker(
         location=[row["Latitude"], row["Longitude"]],
